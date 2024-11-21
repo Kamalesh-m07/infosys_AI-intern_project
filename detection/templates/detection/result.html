@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block video %}{% endblock %} {# Override video block to prevent video from appearing on this page #}
+
+{% block content %}
+
+<div class="messages">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="message {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+</div>
+
+<div class="result-container">
+    <h1>Vehicle Number Plate Detection</h1>
+    <div class="result-content">
+        <p>Detected Number Plate: <span class="detected-plate">{{ prediction }}</span></p>
+        <a href="{% url 'upload_image' %}" class="btn upload-new-btn">Upload Another Image</a>
+    </div>
+</div>
+
+<style>
+    /* Global styles */
+    body {
+        font-family: Arial, sans-serif;
+        background: url('https://img.freepik.com/free-vector/lightened-luxury-sedan-car-against-night-city-with-headlamps-rear-tail-lights-lit_1284-28804.jpg?t=st=1730810509~exp=1730814109~hmac=df55f362011d9dcd9f3edbb9c3a4cf424c76c0845d4ca6b4a4b1ae4d2a455d8a&w=740') no-repeat center center fixed;
+        background-size: cover;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        color: #fff;
+    }
+
+    /* Messages */
+    .messages {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        margin-top: 10px;
+    }
+
+    .message {
+        padding: 10px 20px;
+        border-radius: 5px;
+        margin: 5px 0;
+    }
+
+    .message.success {
+        background-color: rgba(212, 237, 218, 0.8);
+        color: #155724;
+    }
+
+    .message.error {
+        background-color: rgba(248, 215, 218, 0.8);
+        color: #721c24;
+    }
+
+    /* Result container */
+    .result-container {
+        background: rgba(0, 0, 0, 0.85);
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 0 20px rgba(0, 255, 255, 0.6);
+        width: 400px;
+        text-align: center;
+        margin: 20px 0;
+    }
+
+    h1 {
+        font-size: 1.8em;
+        color: #00ffcc;
+        margin-bottom: 20px;
+        text-transform: uppercase;
+        font-weight: bold;
+        letter-spacing: 1px;
+        text-shadow: 0 0 10px #00ffcc, 0 0 20px #00ffcc;
+    }
+
+    .result-content {
+        font-size: 1.2em;
+        color: #00ffcc;
+        margin-bottom: 20px;
+        text-shadow: 0 0 10px #00ffcc, 0 0 20px #00ffcc;
+    }
+
+    .detected-plate {
+        font-weight: bold;
+        font-size: 1.5em;
+        color: #ff5e62;
+        text-shadow: 0 0 10px #ff5e62, 0 0 20px #ff5e62;
+    }
+
+    /* Button styles */
+    .btn {
+        display: inline-block;
+        text-decoration: none;
+        padding: 12px 20px;
+        border-radius: 8px;
+        background: #000;
+        color: #00ffcc;
+        border: 2px solid #00ffcc;
+        font-weight: bold;
+        font-size: 1em;
+        transition: transform 0.2s ease, box-shadow 0.3s ease;
+        box-shadow: 
+            0 0 10px #00ffcc, 
+            0 0 20px #00ffcc, 
+            0 0 30px #00ffcc, 
+            0 0 40px rgba(0, 255, 204, 0.4),
+            inset 0 0 10px rgba(0, 255, 204, 0.5);
+    }
+
+    .btn:hover {
+        box-shadow: 
+            0 0 20px #00ffcc, 
+            0 0 40px #00ffcc, 
+            0 0 60px #00ffcc, 
+            0 0 80px rgba(0, 255, 204, 0.6),
+            inset 0 0 20px rgba(0, 255, 204, 0.5);
+        transform: scale(1.05);
+    }
+
+    .btn:active {
+        transform: scale(0.98);
+        box-shadow: 
+            0 0 10px #00ffcc, 
+            0 0 20px #00ffcc,
+            inset 0 0 5px rgba(0, 255, 204, 0.6);
+    }
+</style>
+
+{% endblock %}

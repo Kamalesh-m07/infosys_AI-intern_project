@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+{% block video %}{% endblock %}  {# Override video block to prevent video from appearing on this page #}
+
+{% block content %}
+<div class="page-wrapper">
+    <!-- Logout Button Section -->
+    <div class="logout-container">
+        <form method="POST" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn logout-btn">Logout</button>
+        </form>
+    </div>
+
+    <!-- Messages Section -->
+    <div class="messages">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <!-- Upload Image Form Section -->
+    <div class="upload-container">
+        <h1>Upload Image for Vehicle Number Plate Detection</h1>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn upload-btn">Upload</button>
+        </form>
+        <p class="upload-instructions">
+            Please ensure the image is clear and contains the number plate for accurate detection.
+        </p>
+    </div>
+</div>
+
+<style>
+    /* Apply background image */
+    body {
+        background-image: url('https://img.freepik.com/free-photo/anime-car-city_23-2151710982.jpg?t=st=1730807750~exp=1730811350~hmac=062395d64f1bb9e0da6e219eb93f660399503f20251a050697ff0487056f94e1&w=826');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        background-repeat: no-repeat;
+    }
+
+    /* Logout Button Styling */
+    .logout-btn {
+        background: #000;
+        color: #00ffcc;
+        padding: 12px;
+        border: 2px solid #00ffcc;
+        border-radius: 8px;
+        font-weight: bold;
+        font-size: 1.1em;
+        transition: all 0.3s ease;
+        box-shadow: 0 0 20px #00ffcc, inset 0 0 10px rgba(0, 255, 204, 0.5);
+        cursor: pointer;
+    }
+
+    .logout-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 30px #00ffcc, inset 0 0 15px rgba(0, 255, 204, 0.6);
+    }
+
+    .logout-btn:active {
+        transform: scale(0.98);
+        box-shadow: 0 0 15px #00ffcc, inset 0 0 8px rgba(0, 255, 204, 0.5);
+    }
+
+    /* Position logout button below the navbar */
+    .logout-container {
+        position: absolute;
+        top: 70px; /* Adjust this value to be below the navbar */
+        right: 20px; /* Right-align the button */
+    }
+
+    /* Messages Styling */
+    .messages {
+        margin-top: 60px;
+        text-align: center;
+    }
+
+    .message {
+        padding: 10px 20px;
+        border-radius: 5px;
+        margin: 10px auto;
+        display: inline-block;
+        font-size: 1rem;
+    }
+
+    .message.success {
+        background-color: rgba(50, 205, 50, 0.8);
+        color: #fff;
+    }
+
+    .message.error {
+        background-color: rgba(255, 69, 0, 0.8);
+        color: #fff;
+    }
+
+    /* Upload Container Styling */
+    .upload-container {
+        background: rgba(0, 0, 0, 0.7);
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 0 20px rgba(0, 255, 255, 0.6), 0 0 40px rgba(0, 255, 255, 0.4);
+        width: 350px;
+        max-width: 90%;
+        margin: 50px auto;
+        text-align: center;
+        border: 2px solid #00ffcc;
+        color: #00ffcc;
+    }
+
+    .upload-container h1 {
+        margin-bottom: 1rem;
+        font-size: 1.8rem;
+        text-shadow: 0 0 10px #00ffcc, 0 0 20px #00ffcc;
+    }
+
+    .upload-instructions {
+        font-size: 0.9rem;
+        color: #ddd;
+        margin-top: 10px;
+    }
+
+    /* Form Input Styling */
+    input[type="file"] {
+        padding: 12px;
+        width: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        color: #00ffcc;
+        border: 1px solid #00ffcc;
+        border-radius: 5px;
+        margin-bottom: 15px;
+        box-shadow: 0 0 5px #00ffcc;
+    }
+
+    input[type="file"]:focus {
+        outline: none;
+        box-shadow: 0 0 10px #00ffcc, 0 0 20px #00ffcc;
+    }
+
+    /* Upload Button Styling */
+    .upload-btn {
+        background: #000;
+        color: #00ffcc;
+        padding: 12px;
+        width: 100%;
+        border: 2px solid #00ffcc;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 1.1em;
+        transition: all 0.3s ease;
+        box-shadow: 0 0 20px #00ffcc, inset 0 0 10px rgba(0, 255, 204, 0.5);
+    }
+
+    .upload-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 30px #00ffcc, inset 0 0 15px rgba(0, 255, 204, 0.6);
+    }
+
+    .upload-btn:active {
+        transform: scale(0.98);
+        box-shadow: 0 0 15px #00ffcc, inset 0 0 8px rgba(0, 255, 204, 0.5);
+    }
+</style>
+{% endblock %}

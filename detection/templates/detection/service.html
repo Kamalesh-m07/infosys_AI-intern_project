@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block video %}{% endblock %}  {# Override video block to prevent video from appearing on this page #}
+
+{% block content %}
+
+<div class="service-container">
+    <h1>Our Services</h1>
+
+    <div class="service-section">
+        <h2 class="service-title" onclick="toggleDropdown('service1')">Dynamic Vehicle Identification</h2>
+        <div id="service1" class="service-content">
+            <p>Our dynamic vehicle identification system uses advanced image processing and machine learning algorithms to accurately identify vehicle number plates in real-time. This service is perfect for applications in traffic management, toll collection, and parking management.</p>
+        </div>
+    </div>
+
+    <div class="service-section">
+        <h2 class="service-title" onclick="toggleDropdown('service2')">Vehicle Tracking System</h2>
+        <div id="service2" class="service-content">
+            <p>With our vehicle tracking system, users can monitor the real-time location of their vehicles. This service is integrated with GPS technology, allowing for precise tracking and data analytics to enhance fleet management and security.</p>
+        </div>
+    </div>
+
+    <div class="service-section">
+        <h2 class="service-title" onclick="toggleDropdown('service3')">Data Analytics and Reporting</h2>
+        <div id="service3" class="service-content">
+            <p>We provide comprehensive data analytics services to help users make informed decisions based on vehicle usage patterns and trends. Our reporting tools offer valuable insights into vehicle operations and can aid in optimizing performance.</p>
+        </div>
+    </div>
+
+    <div class="service-section">
+        <h2 class="service-title" onclick="toggleDropdown('service4')">Integration with Existing Systems</h2>
+        <div id="service4" class="service-content">
+            <p>Our solutions can be seamlessly integrated with existing systems to enhance functionality without disrupting your current operations. We offer customized solutions tailored to your specific requirements.</p>
+        </div>
+    </div>
+
+    <div class="service-section">
+        <h2 class="service-title" onclick="toggleDropdown('service5')">Technologies Used</h2>
+        <div id="service5" class="service-content">
+            <p>We utilize a range of technologies including:</p>
+            <ul>
+                <li>Artificial Intelligence and Machine Learning</li>
+                <li>Optical Character Recognition (OCR)</li>
+                <li>Geolocation and GPS Tracking</li>
+                <li>Cloud Computing for Data Storage and Processing</li>
+                <li>Responsive Web Design for User-Friendly Interfaces</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Global styles */
+    body {
+        font-family: Arial, sans-serif;
+        background: url('https://img.freepik.com/free-vector/car-inside-dashboard-future-neon-road-view_107791-27007.jpg?t=st=1730818068~exp=1730821668~hmac=99c3561ae8c7732cc5c64a012d555cdf28203342298ee83044501240514845f8&w=826') no-repeat center center fixed;
+        background-size: cover;
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: start;
+        min-height: 100vh;
+    }
+
+    /* Service container styles */
+    .service-container {
+        background: rgba(0, 0, 0, 0.85); /* Dark background with transparency */
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 0 20px rgba(0, 255, 255, 0.6);
+        width: 80%;
+        max-width: 800px;
+        text-align: center;
+        margin: 20px auto;
+    }
+
+    h1 {
+        font-size: 2em;
+        color: #00ffcc; /* Neon title color */
+        margin-bottom: 20px;
+        text-transform: uppercase;
+        font-weight: bold;
+        letter-spacing: 1px;
+        text-shadow: 0 0 10px #00ffcc, 0 0 20px #00ffcc; /* Neon glow effect */
+    }
+
+    .service-section {
+        margin: 15px 0;
+        text-align: left; /* Align text to the left */
+    }
+
+    .service-title {
+        font-size: 1.5em;
+        color: #00ffcc; /* Neon section title color */
+        cursor: pointer;
+        margin: 10px 0;
+        text-shadow: 0 0 10px #00ffcc, 0 0 20px #00ffcc; /* Neon glow effect */
+    }
+
+    .service-content {
+        display: none; /* Initially hide the content */
+        margin-top: 10px;
+        background: rgba(0, 0, 0, 0.7);
+        padding: 15px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 255, 255, 0.6);
+    }
+
+    /* Responsive styles */
+    @media (max-width: 600px) {
+        .service-container {
+            width: 90%;
+        }
+    }
+</style>
+
+<script>
+    function toggleDropdown(id) {
+        const content = document.getElementById(id);
+        if (content.style.display === "block") {
+            content.style.display = "none";
+        } else {
+            content.style.display = "block";
+        }
+    }
+</script>
+
+{% endblock %}

@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block video %}{% endblock %}  {# Override video block to prevent video from appearing on this page #}
+
+{% block content %}
+
+<div class="contact-container">
+    <h1>Contact Us</h1>
+    <form method="POST">
+        {% csrf_token %}
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" placeholder="Enter your username" required>
+        
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="Enter your email" required>
+        
+        <label for="issue">Issue</label>
+        <textarea id="issue" name="issue" rows="4" placeholder="Describe your issue..." required></textarea>
+        
+        <button type="submit" class="btn">Submit</button>
+    </form>
+</div>
+
+<style>
+    /* Global styles */
+    body {
+        font-family: Arial, sans-serif;
+        background: url('https://img.freepik.com/free-vector/car-inside-dashboard-future-neon-road-view_107791-27007.jpg?t=st=1730818068~exp=1730821668~hmac=99c3561ae8c7732cc5c64a012d555cdf28203342298ee83044501240514845f8&w=826') no-repeat center center fixed;
+        background-size: cover;
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: start;
+        min-height: 100vh;
+    }
+
+    /* Contact container styles */
+    .contact-container {
+        background: rgba(0, 0, 0, 0.85); /* Dark background with transparency */
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 0 20px rgba(0, 255, 255, 0.6);
+        width: 350px;
+        text-align: center;
+        margin: 20px 0;
+    }
+
+    h1 {
+        font-size: 1.8em;
+        color: #00ffcc; /* Neon title color */
+        margin-bottom: 20px;
+        text-transform: uppercase;
+        font-weight: bold;
+        letter-spacing: 1px;
+        text-shadow: 0 0 10px #00ffcc, 0 0 20px #00ffcc; /* Neon glow effect */
+    }
+
+    label {
+        display: block;
+        text-align: left;
+        font-weight: bold;
+        margin: 1rem 0 0.3rem;
+        color: #00ffcc; /* Neon label color */
+    }
+
+    input[type="text"],
+    input[type="email"],
+    textarea {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 15px;
+        border: none;
+        border-radius: 5px;
+        background: rgba(0, 0, 0, 0.8);
+        color: #00ffcc; /* Neon input text color */
+        font-size: 0.95em;
+        box-shadow: 0 0 5px #00ffcc;
+    }
+
+    textarea {
+        resize: none; /* Prevent resizing of textarea */
+    }
+
+    /* Button Styles */
+    .btn {
+        width: 100%;
+        background: linear-gradient(135deg, #00ffcc, #00ff99);
+        color: #000;
+        padding: 12px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 1em;
+        box-shadow: 0 0 10px #00ffcc, 0 0 20px #00ffcc;
+        transition: background 0.3s, transform 0.2s;
+    }
+
+    .btn:hover {
+        background: #000;
+        color: #00ffcc;
+        transform: scale(1.05);
+        box-shadow: 0 0 20px #00ffcc, 0 0 30px #00ffcc;
+    }
+</style>
+
+{% endblock %}

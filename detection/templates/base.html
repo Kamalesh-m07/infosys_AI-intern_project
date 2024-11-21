@@ -1,0 +1,187 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Dynamic Vehicle Identification & Tracker{% endblock %}</title>
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+    <style>
+        /* Styles for the video background */
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; /* Place behind other elements */
+            overflow: hidden;
+            pointer-events: none; /* Prevent interaction with video */
+        }
+
+        .video-background video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.6; /* Adjust opacity for better text visibility */
+        }
+
+        /* Global Styles */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .title-container {
+            width: 100%;
+            padding: 40px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 3em;
+            color: #ff4b5c;
+            text-shadow: 
+                0 0 5px #ff4b5c,
+                0 0 10px #ff4b5c,
+                0 0 20px #ff4b5c,
+                0 0 30px #ff8c00,
+                0 0 40px #ff8c00,
+                0 0 50px #ff8c00,
+                0 0 60px #ff8c00;
+        }
+
+        .navbar {
+            background-color: rgba(0, 0, 0, 0.5);
+            width: 100%;
+        }
+
+        .navbar .nav-link {
+            color: #fff;
+        }
+
+        .navbar .nav-link:hover {
+            color: #ff4b5c;
+        }
+
+        .get-started-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #ff5e62, #ff9966);
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1em;
+            transition: background 0.3s, transform 0.2s;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .get-started-btn:hover {
+            background: linear-gradient(135deg, #ff9966, #ff5e62);
+            transform: scale(1.05);
+        }
+
+        .portrait-section {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 10px;
+            text-align: center;
+            text-shadow: 
+                0 0 5px #ff4b5c,
+                0 0 10px #ff4b5c,
+                0 0 20px #ff4b5c;
+        }
+
+        h2 {
+            font-size: 2em;
+            color: #ff4b5c;
+            margin-bottom: 10px;
+        }
+
+        .services {
+            font-size: 1.5em;
+            color: #ff8c00;
+            margin-top: 20px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    {% block video %}
+        <div class="video-background">
+            <video autoplay loop muted>
+                <source src="https://cdn.pixabay.com/video/2023/06/17/167659-837413029_large.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    {% endblock %}
+
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Navbar</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="http://127.0.0.1:8000/login/">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="http://127.0.0.1:8000/contact/">Contact</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="http://127.0.0.1:8000/services/">Services</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="title-container">
+        <h1>Dynamic Vehicle Identification</h1>
+        {% if request.path == '/' %}
+            <a href="{% url 'login' %}" class="get-started-btn">Get Started</a>
+        {% endif %}
+    </div>
+
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <div class="portrait-section">
+        <h2>About Us</h2>
+        <p>Welcome to Dynamic Vehicle Identification and Tracker! Our mission is to provide innovative vehicle tracking solutions that enhance security and improve efficiency for individuals and businesses. Utilizing cutting-edge technology, we enable users to monitor their vehicles in real-time, ensuring peace of mind and a greater sense of control.</p>
+    </div>
+
+    <div class="portrait-section">
+        <h2>Our Services</h2>
+        <p class="services">Upload your image and get the vehicle information!</p>
+    </div>
+
+    <footer>
+        &copy; 2024 My Django Project. All rights reserved.
+    </footer>
+</body>
+</html>
