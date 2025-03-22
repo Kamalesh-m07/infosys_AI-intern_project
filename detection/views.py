@@ -2,22 +2,25 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib import messages
+
+from .utils import process_video
 from .forms import ContactForm, MediaUploadForm
 from PIL import Image
 import cv2
 import pytesseract
 import os
+from django.core.files.storage import FileSystemStorage
+from django.http import JsonResponse
 
-# Replace 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe' with the actual installation path on your system
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 # Load mappings of state and district codes (this should be a dictionary or function you define)
 state_district_map = {
-    "KA": "Karnataka",
-    "MH": "Maharashtra",
-    "DL": "Delhi",
-    "TN": "Tamil Nadu",
-    "HR": "Haryana",
+    "KA": "Karnataka\nOWNER NAME:kumaran\nINSURANCE:ACTIVE",
+    "MH": "Maharashtra\nOWNER NAME:RAJ\nINSURANCE:ACTIVE",
+    "DL": "Delhi\nOWNER NAME:SIVA\nINSURANCE:ACTIVE",
+    "TN": "Tamil Nadu\nOWNER NAME:RAJESH\nINSURANCE:NOT ACTIVE",
+    "HR": "Haryana\nOWNER NAME:Harvinder Singh\nINSURANCE:ACTIVE",
     # Add other mappings as needed
 }
 
@@ -27,23 +30,21 @@ def extract_state_and_district(plate_text):
     return state_district_map.get(state_code, "Unknown State")
 
 # Function to process video frame-by-frame
-def process_video(video_path):
-    cap = cv2.VideoCapture(video_path)
-    detected_text = None
-    while cap.isOpened():
-        ret, frame = cap.read()
-        if not ret:
-            break
-        # Convert frame to RGB for PIL compatibility
-        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        pil_frame = Image.fromarray(frame_rgb)
-        text = pytesseract.image_to_string(pil_frame, config='--psm 8')
-        if text.strip():  # Stop once we detect text
-            detected_text = text.strip()
-            break
-    cap.release()
-    return detected_text
+def video_upload_view(request):
+    if request.method == 'POST' and request.FILES.get('video'):
+        video_file = request.FILES['video']
+        fs = FileSystemStorage()
+        filename = fs.save(video_file.name, video_file)
+        video_path = os.path.join(fs.location, filename)  # Ensure correct file path
 
+        # Call process_video with the file path (not the file object)
+        plate_text = process_video(video_path)  
+
+        os.remove(video_path)  # Clean up video file after processing
+
+        return JsonResponse({"detected_text": plate_text if plate_text else "No text detected in video."})
+
+    return JsonResponse({"error": "Invalid request. Please upload a video."}, status=400)
 # Home view
 def home_view(request):
     return render(request, 'base.html')

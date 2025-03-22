@@ -11,68 +11,82 @@ plate_model = joblib.load(model_path)
 
 # Function to preprocess the uploaded image
 def preprocess_image(image_path):
-    img = Image.open(image_path)
-    img = img.resize((64, 64))  # Adjust the size to match the training data
-    img_array = np.array(img).flatten()  # Flatten the image into a 1D array
-    return img_array
+    img = cv2.imread(image_path)  # Load image
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)  # Convert to grayscale
+    blurred = cv2.GaussianBlur(gray, (5, 5), 0)  # Reduce noise
+    edged = cv2.Canny(blurred, 50, 200)  # Edge detection
+    
+    return img, gray, edged
 
-# Detect number plate and extract text using OCR
-def detect_number_plate(image: InMemoryUploadedFile):
-    features, img = preprocess_image(image)
-    # Predict number plate region
-    plate_region = plate_model.predict(features)
-    # Crop to the detected region (this part assumes `plate_region` gives bounding box coordinates)
-    x, y, w, h = plate_region[0]  # Adjust this based on actual model output
-    plate_img = img[y:y+h, x:x+w]
-    # Perform OCR on the cropped plate region
-    plate_text = pytesseract.image_to_string(plate_img, config='--psm 8')  # Adjust config if needed
-    # Process the plate text to determine state and district
-    state, district = extract_state_district(plate_text)
-    return state, district
+def detect_number_plate(image_path):
+    img, gray, edged = preprocess_image(image_path)
 
-# Map number plate text to state and district
-def extract_state_district(plate_text):
-    # Assuming a predefined dictionary mapping plate codes to states/districts
-    plate_mappings = {
-        "MH": ("Maharashtra", "Mumbai"),
-        "DL": ("Delhi", "Central Delhi"),
-        # Add more mappings for other states and districts
-    }
-    # Extract state code from plate text
-    state_code = plate_text[:2]
-    state, district = plate_mappings.get(state_code, ("Unknown", "Unknown"))
-    return state, district
+    # Find contours in the edged image
+    contours, _ = cv2.findContours(edged, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
+    for contour in contours:
+        approx = cv2.approxPolyDP(contour, 0.02 * cv2.arcLength(contour, True), True)
+        
+        # Filter based on the number of corners (license plates are usually rectangular)
+        if len(approx) == 4:  
+            x, y, w, h = cv2.boundingRect(approx)
+            aspect_ratio = w / h
+
+            # Filter based on aspect ratio (license plates usually have a width > height)
+            if 2 < aspect_ratio < 6 and w > 50:
+                plate_img = gray[y:y+h, x:x+w]
+                
+                # Apply thresholding to improve OCR accuracy
+                _, plate_img = cv2.threshold(plate_img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+
+                # Save cropped number plate (optional)
+                cv2.imwrite("extracted_number_plate.jpg", plate_img)
+
+                # Perform OCR
+                plate_text = pytesseract.image_to_string(plate_img, config='--psm 7').strip()
+
+                return plate_text, plate_img
+
+    return "Number plate not detected", None
 # Process video for number plate detection
-def process_video(video: InMemoryUploadedFile):
+def process_video(video_path):
     results = []
     try:
-        # Read the video file
-        cap = cv2.VideoCapture(video.temporary_file_path())
+        cap = cv2.VideoCapture(video_path)
+        frame_counter = 0
+        frame_interval = 30  # Process every 30th frame
 
-        while True:
+        while cap.isOpened():
             ret, frame = cap.read()
             if not ret:
-                break  # Exit loop when the video ends
+                break
 
-            # Convert the frame to grayscale for OCR
-            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            if frame_counter % frame_interval == 0:
+                # Convert frame to grayscale
+                gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-            # Perform OCR on the frame
-            plate_text = pytesseract.image_to_string(gray, config='--psm 8').replace("\n", "").strip()
-            
-            if plate_text:
-                # Extract state and district
-                state, district = extract_state_district(plate_text)
-                results.append(f"Detected: {plate_text}, State: {state}, District: {district}")
-            else:
-                results.append("No text detected in this frame.")
-        
+                # Apply Gaussian Blur to reduce noise
+                blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+
+                # Apply Adaptive Thresholding to highlight text
+                thresholded = cv2.adaptiveThreshold(blurred, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
+
+                # Convert to PIL image for Tesseract OCR
+                pil_frame = Image.fromarray(thresholded)
+
+                # Perform OCR
+                plate_text = pytesseract.image_to_string(pil_frame, config='--psm 5 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789').strip()
+
+                if plate_text:
+                    results.append(plate_text)
+
+            frame_counter += 1
+
         cap.release()
     except Exception as e:
-        results.append(f"An error occurred while processing the video: {str(e)}")
+        return f"An error occurred while processing the video: {str(e)}"
 
-    return results
+    return " | ".join(results) if results else "No text detected in the video."
 
 # Example usage in a Django view
 def handle_uploaded_image(image: InMemoryUploadedFile):
