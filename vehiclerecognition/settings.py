@@ -14,7 +14,10 @@ SECRET_KEY = 'django-insecure-_-t7#c3p_!d56+=!5xo$fs6p))2-@0(hh#kq2edvs2()sw943v
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+ALLOWED_HOSTS = ['your-app-name.onrender.com']
 ALLOWED_HOSTS = []
+
+
 
 
 # Application definition
@@ -120,5 +123,8 @@ LOGIN_REDIRECT_URL = 'upload_image'
 import os
 
 STATIC_URL = 'static/'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 # STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
